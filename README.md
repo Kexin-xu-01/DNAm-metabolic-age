@@ -18,12 +18,12 @@ The code allows users to apply the DNAm-metabolic clock to cohorts with only DNA
 
 **CpG_to_DNAm_metabolite.csv**: This CSV file is used to build 177 DNAm-metabolites. It contains the linear regression coefficients (including intercepts) to build 177 DNAm-metabolites from CpGs. 
 
-**DNAm_metabolite_to_clock.csv**: This CSV file is used to predict the DNAm-metabolic age. The first column contains the linear regression coefficients (including intercepts) to build the DNAm-metabolic clock from 177 DNAm-metabolites. The second and third columns contain the standard deviation and mean derived from the Airwave dataset (N= 820), to scale the DNAm-metabolites before using them to build the clock. 
+**DNAm_metabolite_to_clock.csv**: This CSV file is used to predict the DNAm-metabolic age. The first column contains the linear regression coefficients (including intercepts) to build the DNAm-metabolic clock from 177 DNAm-metabolites. The second and third columns contain the standard deviation and mean derived from the Airwave dataset, to scale the DNAm-metabolites before using them to build the clock. 
 
 # User Instruction
 1. Users first need to check whether they have all the CpGs needed to build the DNAm-metabolites. You can do this by checking the column names of **CpG_to_DNAm_metabolite.csv**. If you try to run the script without having all the CpGs ready, an error message will appear indicating that you don't have all the CpGs.
    
-2. Users need to convert CpG values from beta values to M values using the formula: M value = log2(beta value / (1 - beta value))
+2. Users need to convert CpG values from beta values to M values using the formula: *M value = log2(beta value / (1 - beta value))*.
    
 3. Users need to impute any missing CpG values in some samples. I recommend using the knn.impute function. If you try to run the script having some NA CpGs values, an error message will appear indicating that some CpG values are missing in some samples.
    
@@ -33,7 +33,11 @@ The code allows users to apply the DNAm-metabolic clock to cohorts with only DNA
    
 6. Users run **Build_DNAm_metabolic_clock.R** in the same environment with the CpG matrix.
    
-7. Users get a list called **Age_and_DNAm_metabolites** as the output. Users can access the DNAm-metabolic age using **Age_and_DNAm_metabolites$DNAm_metabolic_age**, which returns a vector containing DNAm-metabolic age of each sample. Users can access the DNAm-metabolites using *Age_and_DNAm_metabolites$DNAm_metabolite*, which returns a matrix containing values of 177 DNAm-metabolites for each sample (row: sample ID; column: DNAm-metabolite name).
+7. Users get a list called **Age_and_DNAm_metabolites** as the output.
+
+   Users can access the DNAm-metabolic age using **Age_and_DNAm_metabolites$DNAm_metabolic_age**, which returns a vector containing DNAm-metabolic age of each sample.
+
+   Users can access the DNAm-metabolites using **Age_and_DNAm_metabolites$DNAm_metabolite**, which returns a matrix containing values of 177 DNAm-metabolites for each sample (row: sample ID; column: DNAm-metabolite name).
 
 Please direct any enquires to Ms Kexin Xu at kexin.xu@bnc.ox.ac.uk or open a Github issue. 
 

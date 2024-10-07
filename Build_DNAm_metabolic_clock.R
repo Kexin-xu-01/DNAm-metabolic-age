@@ -12,15 +12,15 @@ Build_DNAm_metabolic_clock <- function(CpG_matrix, CpG_to_DNAm_metabolite_csv, D
   # The second and third columns contain the standard deviation and mean derived from the Airwave dataset, to scale the DNAm-metabolites before using them to build the clock. 
   
   # output:
-  # 1. list(Age_DNAmm, DNAmm): a list containing the following objects
-  # a) Age_DNAmm: a named vector of numbers, representing the DNAm-metabolic age for each sample (length: sample number)
-  # b) DNAmm: values of 177 DNAm-metabolites for each sample (samples x DNAm-metabolites)
+  # 1. list(DNAm_metabolic_age, DNAm_metabolite): a list containing the following objects
+  # a) DNAm_metabolic_age: a named vector of numbers, representing the DNAm-metabolic age for each sample (length: sample number)
+  # b) DNAm_metabolite: values of 177 DNAm-metabolites for each sample (samples x DNAm-metabolites)
   
   # libraries required to run this function: tidyverse 
   
   # read CSV containing coefficients to build DNAm-metabolites and DNAm-metabolic clock
-  CpG_to_DNAm_metabolite <- read_csv(CpG_to_DNAm_metabolite_csv, show_col_types = FALSE)
-  DNAm_metabolite_to_clock <- read_csv(DNAm_metabolite_to_clock_csv, show_col_types = FALSE) %>% as.matrix() # later we perform matrix multiplication so it needs to be matrix 
+  CpG_to_DNAm_metabolite <- read.csv(CpG_to_DNAm_metabolite_csv, row.names = 1)
+  DNAm_metabolite_to_clock <- read.csv(DNAm_metabolite_to_clock_csv, row.names = 1) %>% as.matrix() # later we perform matrix multiplication so it needs to be matrix 
   
   # check if all CpGs needed are present in the provided DNA methylation matrix and with no missing values in some samples 
   if (any(!names(CpG_to_DNAm_metabolite)[-1] %in% colnames(CpG_matrix))){
@@ -35,11 +35,17 @@ Build_DNAm_metabolic_clock <- function(CpG_matrix, CpG_to_DNAm_metabolite_csv, D
       # filter DNA methylation data to only keep CpGs that is used to build DNAm-metabolic clock
       DNAm <- CpG_matrix[ , names(CpG_to_DNAm_metabolite)[-1]] 
       
+      # replace NA with 0 to avoid errors
+      CpG_to_DNAm_metabolite[is.na(CpG_to_DNAm_metabolite)] <- 0
+      
       # matrix multiplication to get the patient x DNAm-metabolite df 
       DNAm_metabolite <- DNAm %*% t(CpG_to_DNAm_metabolite[ ,-1])
       
       # add the intercept for each metabolite (DNAm-metabolite not scaled yet) dim: number of people x 177 DNAm-metabolites
       DNAm_metabolite <- apply(DNAm_metabolite,1,function(x) {x + CpG_to_DNAm_metabolite[ ,1] %>% t()}) %>% t()
+      
+      # set DNAm-metabolite as column names
+      colnames(DNAm_metabolite) <- rownames(CpG_to_DNAm_metabolite)
       
       # scaling
       DNAm_metabolite_scaled <- apply(DNAm_metabolite,1,function(x) {(x + DNAm_metabolite_to_clock[2:dim(DNAm_metabolite_to_clock)[1], 2]) / DNAm_metabolite_to_clock[2:dim(DNAm_metabolite_to_clock)[1], 3]}) %>% t()  # plus mean, divded by SD

@@ -1,5 +1,5 @@
 # DNAm-metabolic-age
-This repository contains supporting materials (data/codes) for the manuscript "Assessing metabolic ageing via DNA methylation surrogate markers in two British and Irish cohorts".
+This repository contains supporting materials (data/codes) for the paper "Assessing metabolic ageing via DNA methylation surrogate markers in two British and Irish cohorts" published on Aging Cell https://onlinelibrary.wiley.com/doi/10.1111/acel.14484. 
 Users can build the DNAm-metabolic clock to estimate biological age of people from DNA methylation (DNAm) and metabolites in blood.
 
 ## Introduction
